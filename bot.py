@@ -13,22 +13,20 @@ WEBHOOK_PATH = f'/{TOKEN}'
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     try:
-        print(f"Получено сообщение от {message.from_user.id}: '{message.text}'")
-        
-        # Пытаемся отправить через send_message (стабильнее, чем reply_to)
-        sent_msg = bot.send_message(
+        user_text = message.text or '(пустое сообщение)'
+        print(f"Получено от {message.from_user.id}: '{user_text}'")
+
+        # Стабильный способ отправки
+        sent = bot.send_message(
             chat_id=message.chat.id,
-            text=f"Ты написал: {message.text or '(пусто)'} 🔥"
+            text=f"Ты написал: {user_text} 🔥",
+            parse_mode=None  # без форматирования, чтобы не глючило
         )
-        
-        print(f"Ответ отправлен успешно, ID сообщения: {sent_msg.message_id}")
+
+        print(f"Сообщение отправлено успешно, ID: {sent.message_id}")
     except telebot.apihelper.ApiTelegramException as api_err:
-        print(f"ApiTelegramException: {api_err.result_json}")
+        print(f"Telegram API ошибка: {api_err.result_json}")
         print(traceback.format_exc())
-        try:
-            bot.send_message(message.chat.id, "Ошибка API Telegram 😔")
-        except:
-            pass
     except Exception as e:
         print(f"Общая ошибка: {str(e)}")
         print(traceback.format_exc())
@@ -49,4 +47,5 @@ def webhook():
 if __name__ == '__main__':
 
     app.run(host='0.0.0.0', port=5000)
+
 
