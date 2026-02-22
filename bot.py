@@ -9,6 +9,11 @@ TOKEN = os.environ.get('BOT_TOKEN')
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
 WEBHOOK_PATH = f'/{TOKEN}'
+TOKEN = os.environ.get('BOT_TOKEN')
+if not TOKEN:
+    print("CRITICAL ERROR: BOT_TOKEN is None or not set in environment variables!")
+    raise ValueError("BOT_TOKEN not set!")
+print(f"TOKEN successfully loaded: {TOKEN[:10]}... (hidden)")
 
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
@@ -47,5 +52,6 @@ def webhook():
 if __name__ == '__main__':
 
     app.run(host='0.0.0.0', port=5000)
+
 
 
